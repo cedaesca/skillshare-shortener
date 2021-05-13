@@ -23,7 +23,7 @@ createConnection()
       let link: Link;
 
       try {
-        link = await Link.findOneOrFail();
+        link = await Link.findOneOrFail({ slug: req.params.slug });
       } catch (error) {
         if (error instanceof EntityNotFoundError) {
           return res
