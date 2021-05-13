@@ -15,15 +15,21 @@
     "eslint-plugin-promise": "^4.3.1",
     "prettier": "^2.3.0",
     "ts-node": "3.3.0",
+    "ts-node-dev": "^1.1.6",
     "typescript": "3.3.3333"
   },
   "dependencies": {
-    "typeorm": "0.2.31",
+    "@types/express": "^4.17.11",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
-    "mysql": "^2.14.1"
+    "typeorm": "0.2.31"
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "dev": "ts-node-dev src/index.ts"
   }
 }
