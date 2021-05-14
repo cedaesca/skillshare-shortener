@@ -5,10 +5,10 @@ import * as commander from 'commander';
 import * as chalk from 'chalk';
 import * as figlet from 'figlet';
 import { EntityNotFoundError, IsNull, Not, FindOperator } from 'typeorm';
+import validator from 'validator';
 
 // Internal dependencies
 import { Link } from '../models/link';
-import { General } from '../utils/general';
 import { URL } from 'url';
 
 export class ShortenerCLI {
@@ -43,7 +43,7 @@ export class ShortenerCLI {
     const options = this.program.opts();
     const argumentValue = options[Object.keys(options)[0]];
 
-    if (argumentValue !== undefined && !General.isValidURL(argumentValue)) {
+    if (argumentValue !== undefined && !validator.isURL(argumentValue)) {
       console.log(
         'Please provide a valid URL as an argument. Example: sk --shorten https://google.com'
       );
