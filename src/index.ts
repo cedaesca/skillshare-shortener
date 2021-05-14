@@ -4,7 +4,6 @@ import { createConnection, Entity, EntityNotFoundError, IsNull } from 'typeorm';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
-import * as path from 'path';
 
 // Internal dependencies
 import { FileSystem } from './utils/file-system';
