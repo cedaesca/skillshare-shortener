@@ -1,6 +1,6 @@
 // Libraries
 import 'reflect-metadata';
-import { createConnection, Entity, EntityNotFoundError, IsNull } from 'typeorm';
+import { createConnection, EntityNotFoundError, IsNull } from 'typeorm';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
