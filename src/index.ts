@@ -1,6 +1,6 @@
 // Libraries
 import 'reflect-metadata';
-import { createConnection, Entity, EntityNotFoundError } from 'typeorm';
+import { createConnection, Entity, EntityNotFoundError, IsNull } from 'typeorm';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
@@ -23,7 +23,10 @@ createConnection()
       let link: Link;
 
       try {
-        link = await Link.findOneOrFail({ slug: req.params.slug });
+        link = await Link.findOneOrFail({
+          slug: req.params.slug,
+          disabledAt: IsNull(),
+        });
       } catch (error) {
         if (error instanceof EntityNotFoundError) {
           return res
