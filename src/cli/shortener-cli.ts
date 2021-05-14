@@ -50,6 +50,8 @@ export class ShortenerCLI {
       await this.disable(options.disable);
     } else if (options.enable) {
       await this.enable(options.enable);
+    } else if (options.stats) {
+      await this.fetchStats(options.stats);
     } else if (Object.keys(options).length < 1) {
       console.log(
         chalk.red(figlet.textSync('skillshare', { horizontalLayout: 'full' }))
@@ -111,6 +113,52 @@ export class ShortenerCLI {
     await this.updateLink({ url, disabledAt: null });
 
     console.log(`Link ${url} has been enabled!`);
+  }
+
+  /**
+   * Fetch a given URL's stats
+   *
+   * @param { string } url
+   *
+   * @return { Promise<void> }
+   */
+  private async fetchStats(url: string): Promise<void> {
+    let link: Link;
+
+    const slug = this.getSlugFromUrl(url);
+
+    try {
+      link = await Link.findOneOrFail({ slug }, { relations: ['visits'] });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        console.log(`No link "${url}" was found in the database.`);
+      } else {
+        console.log(
+          `An error occured while fetching the link from the database`
+        );
+      }
+
+      process.exit(0);
+    }
+
+    const linkStatus = link.disabledAt === null ? 'active' : 'disabled';
+    const totalVisits = link.visits.length;
+
+    const details = link.visits.map((visit) => {
+      const formattedDetail = `
+        - IP ${visit.ipAddress} - Date: ${visit.createdAt} - UserAgent: ${visit.userAgent} - Referrer: ${visit.referrer}
+      `;
+
+      return formattedDetail;
+    });
+
+    console.log(`
+      Stats for link ${url}
+      Current status: ${linkStatus}
+      Times it has been opened: ${totalVisits}
+      Details:
+        ${details}
+    `);
   }
 
   /**
