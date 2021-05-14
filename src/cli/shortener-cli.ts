@@ -11,6 +11,7 @@ import { General } from '../utils/general';
 
 export class ShortenerCLI {
   private program: commander.Command;
+  private baseUrl = process.env.BASE_URL;
 
   constructor(program: commander.Command) {
     this.program = program;
@@ -73,7 +74,7 @@ export class ShortenerCLI {
     }
 
     console.log(
-      `Link has been shortened! You can open it here: ${process.env.BASE_URL}/${link.slug}`
+      `Link has been shortened! You can open it here: ${this.baseUrl}/${link.slug}`
     );
   }
 }
