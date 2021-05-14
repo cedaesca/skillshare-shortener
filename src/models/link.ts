@@ -17,7 +17,7 @@ export class Link extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   slug: string;
 
   @Column({ nullable: false })
