@@ -17,9 +17,10 @@
 
 1. `sk --help` Display all the available commands.
 2. `sk --shorten <url>` Shortens the given URL.
-3. `sk --disable <url>` Disables the given URL.
-4. `sk --enable <url>` Enables a previously disabled URL.
-5. `sk --stats <url>` Display the given URL stats.
+3. `sk --disable <shortened url>` Disables the given URL.
+4. `sk --enable <shortened url>` Enables a previously disabled URL.
+5. `sk --stats <shortened url>` Display the given URL stats.
+6. `sk --list <shortened url>` Display all the shortlinks for a given URL.
 
 ## Warnings
 

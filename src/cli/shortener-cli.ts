@@ -28,9 +28,16 @@ export class ShortenerCLI {
       .version('0.0.1')
       .description('CLI to shorten links and fetch statistics')
       .option('--shorten <url>', 'Shortens an url')
-      .option('--stats <url>', 'Shows statistics for a shortened link')
-      .option('--disable <url>', 'Disables a shortened url')
-      .option('--enable <url>', 'Enables a previously disabled shortened url')
+      .option(
+        '--stats <shortened url>',
+        'Shows statistics for a shortened link'
+      )
+      .option('--disable <shortened url>', 'Disables a shortened url')
+      .option(
+        '--enable <shortened url>',
+        'Enables a previously disabled shortened url'
+      )
+      .option('--list <url>', 'Display all the shortlinks for a given URL.')
       .parse(process.argv);
 
     const options = this.program.opts();
@@ -52,6 +59,8 @@ export class ShortenerCLI {
       await this.enable(options.enable);
     } else if (options.stats) {
       await this.fetchStats(options.stats);
+    } else if (options.list) {
+      await this.list(options.list);
     } else if (Object.keys(options).length < 1) {
       console.log(
         chalk.red(figlet.textSync('skillshare', { horizontalLayout: 'full' }))
@@ -158,6 +167,42 @@ export class ShortenerCLI {
       Times it has been opened: ${totalVisits}
       Details:
         ${details}
+    `);
+  }
+
+  /**
+   * Display all the shortlinks for a given URL
+   *
+   * @param { string } url
+   *
+   * @return { Promise<void> }
+   */
+  private async list(url: string): Promise<void> {
+    let links: Link[];
+
+    try {
+      links = await Link.find({ target: url });
+    } catch (error) {
+      console.log(`An error occured while fetching the shortlinks`);
+
+      process.exit(0);
+    }
+
+    const formattedLinks = links.map((link) => {
+      const linkStatus = link.disabledAt === null ? 'active' : 'disabled';
+
+      return `
+        - ${this.baseUrl}/${link.slug} - Created at: ${link.createdAt} - Current status: ${linkStatus}
+      `;
+    });
+
+    const totalLinks = links.length;
+
+    console.log(`
+      Shortlinks for link ${url}
+      Times it has been shortened: ${totalLinks}
+      Details:
+        ${formattedLinks}
     `);
   }
 
