@@ -4,10 +4,12 @@ import { nanoid } from 'nanoid';
 import * as commander from 'commander';
 import * as chalk from 'chalk';
 import * as figlet from 'figlet';
+import { EntityNotFoundError, IsNull, Not, FindOperator } from 'typeorm';
 
 // Internal dependencies
 import { Link } from '../models/link';
 import { General } from '../utils/general';
+import { URL } from 'url';
 
 export class ShortenerCLI {
   private program: commander.Command;
@@ -44,6 +46,10 @@ export class ShortenerCLI {
 
     if (options.shorten) {
       await this.shorten(options.shorten);
+    } else if (options.disable) {
+      await this.disable(options.disable);
+    } else if (options.enable) {
+      await this.enable(options.enable);
     } else if (Object.keys(options).length < 1) {
       console.log(
         chalk.red(figlet.textSync('skillshare', { horizontalLayout: 'full' }))
@@ -72,10 +78,103 @@ export class ShortenerCLI {
       await link.save();
     } catch (error) {
       console.error('An error occured while saving the link', error);
+
+      process.exit(0);
     }
 
     console.log(
       `Link has been shortened! You can open it here: ${this.baseUrl}/${link.slug}`
     );
+  }
+
+  /**
+   * Disables a given URL
+   *
+   * @param { string } url
+   *
+   * @return { Promise<void> }
+   */
+  private async disable(url: string): Promise<void> {
+    await this.updateLink({ url, disabledAt: new Date() });
+
+    console.log(`Link ${url} has been disabled!`);
+  }
+
+  /**
+   * Enables a given URL
+   *
+   * @param { string } url
+   *
+   * @return { Promise<void> }
+   */
+  private async enable(url: string): Promise<void> {
+    await this.updateLink({ url, disabledAt: null });
+
+    console.log(`Link ${url} has been enabled!`);
+  }
+
+  /**
+   * Retrieves the slug from a given URL
+   *
+   * @param { string } url
+   *
+   * @return { string }
+   */
+  private getSlugFromUrl(url: string): string {
+    const [, slug] = new URL(url).pathname.split('/');
+
+    return slug;
+  }
+
+  /**
+   * Disable or enable a given URL
+   *
+   * @param { { url: string; disabledAt: Date | null } } options
+   *
+   * @return { Promise<void> }
+   */
+  private async updateLink(options: {
+    url: string;
+    disabledAt: Date | null;
+  }): Promise<void> {
+    let link: Link;
+    let disabledAt: FindOperator<any>;
+    let searchingLinkState: string;
+
+    const slug = this.getSlugFromUrl(options.url);
+
+    if (options.disabledAt !== null) {
+      disabledAt = IsNull();
+      searchingLinkState = 'active';
+    } else {
+      disabledAt = Not(IsNull());
+      searchingLinkState = 'disabled';
+    }
+
+    try {
+      link = await Link.findOneOrFail({ slug, disabledAt });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        console.log(
+          `No ${searchingLinkState} link "${options.url}" was found in the database.`
+        );
+      } else {
+        console.log(
+          `An error occured while fetching the link from the database`
+        );
+      }
+
+      process.exit(0);
+    }
+
+    link.disabledAt = options.disabledAt;
+
+    try {
+      await link.save();
+    } catch (error) {
+      console.log(`An error occured while updating the link in the database`);
+
+      process.exit(0);
+    }
   }
 }
