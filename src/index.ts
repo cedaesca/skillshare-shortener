@@ -13,7 +13,7 @@ import { Visit } from './models/visit';
 createConnection()
   .then(async (connection) => {
     const app = express();
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || parseInt(process.env.FALLBACK_PORT);
 
     // Before middlewares
     app.use(helmet());
