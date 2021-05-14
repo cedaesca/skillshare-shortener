@@ -34,7 +34,7 @@ export class ShortenerCLI {
     const options = this.program.opts();
     const argumentValue = options[Object.keys(options)[0]];
 
-    if (!General.isValidURL(argumentValue)) {
+    if (argumentValue !== undefined && !General.isValidURL(argumentValue)) {
       console.log(
         'Please provide a valid URL as an argument. Example: sk --shorten https://google.com'
       );
