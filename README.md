@@ -3,6 +3,7 @@
 ## Project Requirements
 
 1. Node Version >= 14
+2. MySQL Database
 
 ## Setup Steps
 
