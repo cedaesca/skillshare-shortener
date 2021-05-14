@@ -32,6 +32,15 @@ export class ShortenerCLI {
       .parse(process.argv);
 
     const options = this.program.opts();
+    const argumentValue = options[Object.keys(options)[0]];
+
+    if (!General.isValidURL(argumentValue)) {
+      console.log(
+        'Please provide a valid URL as an argument. Example: sk --shorten https://google.com'
+      );
+
+      process.exit(0);
+    }
 
     if (options.shorten) {
       await this.shorten(options.shorten);
@@ -54,14 +63,6 @@ export class ShortenerCLI {
    * @return { Promise<void> }
    */
   private async shorten(url: string): Promise<void> {
-    if (!General.isValidURL(url)) {
-      console.log(
-        'Please provide a valid URL as an argument. Example: sk --shorten https://google.com'
-      );
-
-      process.exit(0);
-    }
-
     const link = new Link();
 
     link.target = url;
