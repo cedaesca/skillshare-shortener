@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { createConnection, getConnectionOptions } from 'typeorm';
 import { Command } from 'commander';
 import { ShortenerCLI } from './shortener-cli';
