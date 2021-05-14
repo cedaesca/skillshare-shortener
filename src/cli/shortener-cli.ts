@@ -6,14 +6,15 @@ import * as chalk from 'chalk';
 import * as figlet from 'figlet';
 import { EntityNotFoundError, IsNull, Not, FindOperator } from 'typeorm';
 import validator from 'validator';
+import { URL } from 'url';
 
 // Internal dependencies
+import { environment } from '../config/environment';
 import { Link } from '../models/link';
-import { URL } from 'url';
 
 export class ShortenerCLI {
   private program: commander.Command;
-  private baseUrl = process.env.BASE_URL;
+  private baseUrl = environment.baseUrl;
 
   constructor(program: commander.Command) {
     this.program = program;

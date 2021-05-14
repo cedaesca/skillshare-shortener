@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import * as helmet from 'helmet';
 
 // Internal dependencies
+import { environment } from './config/environment';
 import { FileSystem } from './utils/file-system';
 import { Link } from './models/link';
 import { Visit } from './models/visit';
@@ -13,7 +14,7 @@ import { Visit } from './models/visit';
 createConnection()
   .then(async (connection) => {
     const app = express();
-    const port = process.env.PORT || parseInt(process.env.FALLBACK_PORT);
+    const port = process.env.PORT || environment.fallbackPort;
 
     // Before middlewares
     app.use(helmet());
