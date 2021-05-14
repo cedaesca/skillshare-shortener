@@ -52,6 +52,9 @@ export class ShortenerCLI {
       process.exit(0);
     }
 
+    /**
+     * @todo: Refactor this into command finder and handlers
+     */
     if (options.shorten) {
       await this.shorten(options.shorten);
     } else if (options.disable) {
